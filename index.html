@@ -452,7 +452,7 @@ function goToPage3() {
   goTo(3);
 }
 
-function submitForm() {
+async function submitForm() {
   const btn = document.querySelector('#page3 .btn-primary');
   btn.disabled = true;
   btn.textContent = '⏳ جارٍ الإرسال...';
@@ -473,33 +473,23 @@ function submitForm() {
     members
   };
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQnMRxjskUQLacVYXQcVVvhePk8Ej4Op8PmIrsR4xGcP3ISde7MZrdVf3qaJds_W80iQ/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyr4NASkxUTdzBolSoWYpe1BmFx8bNsYoW_TegmmftDjJ7ynAZosSYGamArS3FIm8bmLA/exec';
 
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.name = 'hidden_iframe';
-  document.body.appendChild(iframe);
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(payload)
+    });
+  } catch(err) {
+    console.error(err);
+  }
 
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = SCRIPT_URL;
-  form.target = 'hidden_iframe';
-
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'data';
-  input.value = JSON.stringify(payload);
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
-
-  setTimeout(() => {
-    document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
-    document.getElementById('steps-bar').style.display='none';
-    document.getElementById('success').style.display='block';
-    document.getElementById('success-label').textContent=
-      pType==='solo' ? `🧑‍💻 ${v('m1-name')} — فريق: ${v('solo-team-name')}` : `👥 فريق: ${v('team-name')}`;
-  }, 1500);
+  document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('steps-bar').style.display='none';
+  document.getElementById('success').style.display='block';
+  document.getElementById('success-label').textContent=
+    pType==='solo' ? `🧑‍💻 ${v('m1-name')} — فريق: ${v('solo-team-name')}` : `👥 فريق: ${v('team-name')}`;
 }
 </script>
 </body>
